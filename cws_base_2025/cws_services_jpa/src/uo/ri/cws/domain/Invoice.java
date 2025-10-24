@@ -6,93 +6,99 @@ import java.util.List;
 import java.util.Set;
 
 public class Invoice {
-	public enum InvoiceState { NOT_YET_PAID, PAID }
+    public enum InvoiceState {
+        NOT_YET_PAID, PAID
+    }
 
-	// natural attributes
-	private Long number;
-	private LocalDate date;
-	private double amount;
-	private double vat;
-	private InvoiceState state = InvoiceState.NOT_YET_PAID;
+    // natural attributes
+    private Long number;
+    private LocalDate date;
+    private double amount;
+    private double vat;
+    private InvoiceState state = InvoiceState.NOT_YET_PAID;
 
-	// accidental attributes
-	private Set<WorkOrder> workOrders = new HashSet<>();
-	private Set<Charge> charges = new HashSet<>();
+    // accidental attributes
+    private Set<WorkOrder> workOrders = new HashSet<>();
+    private Set<Charge> charges = new HashSet<>();
 
-	public Invoice(Long number) {
-		// call full constructor with sensible defaults
-	}
+    public Invoice(Long number) {
+        // call full constructor with sensible defaults
+    }
 
-	public Invoice(Long number, LocalDate date) {
-		// call full constructor with sensible defaults
-	}
+    public Invoice(Long number, LocalDate date) {
+        // call full constructor with sensible defaults
+    }
 
-	public Invoice(Long number, List<WorkOrder> workOrders) {
-		this(number, LocalDate.now(), workOrders);
-	}
+    public Invoice(Long number, List<WorkOrder> workOrders) {
+        this(number, LocalDate.now(), workOrders);
+    }
 
-	// full constructor
-	public Invoice(Long number, LocalDate date, List<WorkOrder> workOrders) {
-		// check arguments (always), through IllegalArgumentException
-		// store the number
-		// add every work order calling addWorkOrder( w )
-	}
+    // full constructor
+    public Invoice(Long number, LocalDate date, List<WorkOrder> workOrders) {
+        // check arguments (always), through IllegalArgumentException store the
+        // number add every work order calling addWorkOrder( w )
+    }
 
-	/**
-	 * Computes amount and vat (vat depends on the date)
-	 */
-	private void computeAmount() {
+    /**
+     * Computes amount and vat (vat depends on the date)
+     */
+    private void computeAmount() {
 
-	}
+    }
 
-	/**
-	 * Adds (double links) the workOrder to the invoice and updates the amount and vat
-	 * @param workOrder
-	 * @see UML_State diagrams on the problem statement document
-	 * @throws IllegalStateException if the invoice status is not NOT_YET_PAID
-	 * @throws IllegalStateException if the workorder status is not FINISHED 
-	 */
-	public void addWorkOrder(WorkOrder workOrder) {
+    /**
+     * Adds (double links) the workOrder to the invoice and updates the amount
+     * and vat
+     * 
+     * @param workOrder
+     * @see UML_State diagrams on the problem statement document
+     * @throws IllegalStateException if the invoice status is not NOT_YET_PAID
+     * @throws IllegalStateException if the workorder status is not FINISHED
+     */
+    public void addWorkOrder(WorkOrder workOrder) {
 
-	}
+    }
 
-	/**
-	 * Removes a work order from the invoice, updates the workorder state
-	 * and recomputes amount and vat
-	 * @param workOrder
-	 * @see UML_State diagrams on the problem statement document
-	 * @throws IllegalStateException if the invoice status is not NOT_YET_PAID
-	 * @throws IllegalArgumentException if the invoice does not contain the workorder
-	 */
-	public void removeWorkOrder(WorkOrder workOrder) {
+    /**
+     * Removes a work order from the invoice, updates the workorder state and
+     * recomputes amount and vat
+     * 
+     * @param workOrder
+     * @see UML_State diagrams on the problem statement document
+     * @throws IllegalStateException    if the invoice status is not
+     *                                  NOT_YET_PAID
+     * @throws IllegalArgumentException if the invoice does not contain the
+     *                                  workorder
+     */
+    public void removeWorkOrder(WorkOrder workOrder) {
 
-	}
+    }
 
-	/**
-	 * Marks the invoice as PAID, but
-	 * @throws IllegalStateException if
-	 * 	- Is already settled
-	 *  - Or the amounts paid with charges to payment means do not cover
-	 *  	the total of the invoice
-	 */
-	public void settle() {
+    /**
+     * Marks the invoice as PAID, but
+     * 
+     * @throws IllegalStateException if - Is already settled - Or the amounts
+     *                               paid with charges to payment means do not
+     *                               cover the total of the invoice
+     */
+    public void settle() {
 
-	}
+    }
 
-	public Set<WorkOrder> getWorkOrders() {
-		return new HashSet<>( workOrders );
-	}
+    public Set<WorkOrder> getWorkOrders() {
+        return new HashSet<>(workOrders);
+    }
 
-	Set<WorkOrder> _getWorkOrders() {
-		return workOrders;
-	}
+    Set<WorkOrder> _getWorkOrders() {
+        return workOrders;
+    }
 
-	public Set<Charge> getCharges() {
-		return new HashSet<>( charges );
-	}
+    public Set<Charge> getCharges() {
+        return new HashSet<>(charges);
+    }
 
-	Set<Charge> _getCharges() {
-		return charges;
-	}
+    Set<Charge> _getCharges() {
+        return charges;
+    }
 
 }

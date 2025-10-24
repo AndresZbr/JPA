@@ -38,6 +38,10 @@ public class WorkOrder {
         Associations.Fixes.link(vehicle, this);
     }
 
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
     public LocalDateTime getDate() {
         return date;
     }
@@ -182,6 +186,10 @@ public class WorkOrder {
 
     void _setInvoice(Invoice invoice) {
         this.invoice = invoice;
+    }
+
+    public Mechanic getMechanic() {
+        return mechanic;
     }
 
 }

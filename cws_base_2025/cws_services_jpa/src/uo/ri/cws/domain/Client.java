@@ -16,7 +16,7 @@ public class Client {
 
     // accidental attributes
     private Set<Vehicle> vehicles = new HashSet<>();
-    private Set<PaymentMean> payment = new HashSet<>();
+    private Set<PaymentMean> payments = new HashSet<>();
 
     public Client(String nif, String name, String surname) {
         this(nif, name, surname, "no-email", "no-phone",
@@ -46,6 +46,14 @@ public class Client {
 
     Set<Vehicle> _getVehicles() {
         return vehicles;
+    }
+
+    public Set<PaymentMean> getPaymentMeans() {
+        return new HashSet<>(payments);
+    }
+
+    Set<PaymentMean> _getPaymentMeans() {
+        return payments;
     }
 
     public String getNif() {
@@ -95,5 +103,4 @@ public class Client {
                 + ", email=" + email + ", phone=" + phone + ", address="
                 + address + "]";
     }
-
 }

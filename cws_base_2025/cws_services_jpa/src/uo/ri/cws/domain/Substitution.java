@@ -17,9 +17,9 @@ public class Substitution {
     public Substitution(SparePart sparePart, Intervention intervention,
             int quantity) {
         // validar
-        ArgumentChecks.isNotNull(mechanic);
-        ArgumentChecks.isNotNull(workOrder);
-        ArgumentChecks.isNotNull(date);
+        ArgumentChecks.isNotNull(sparePart);
+        ArgumentChecks.isNotNull(intervention);
+        ArgumentChecks.isTrue(quantity >= 0);
 
         this.quantity = quantity;
         Associations.Substitutes.link(sparePart, this, intervention);
