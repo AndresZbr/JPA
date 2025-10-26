@@ -23,12 +23,10 @@ public class Invoice {
     private Set<Charge> charges = new HashSet<>();
 
     public Invoice(Long number) {
-        // call full constructor with sensible defaults
         this(number, LocalDate.now(), List.of());
     }
 
     public Invoice(Long number, LocalDate date) {
-        // call full constructor with sensible defaults
         this(number, date, List.of());
     }
 
