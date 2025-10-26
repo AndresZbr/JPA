@@ -18,6 +18,10 @@ public class SparePart {
     // accidental attributes
     private Set<Substitution> substitutions = new HashSet<>();
 
+    public SparePart(String code) {
+        this(code, "", 0.0, 0, 0, 0);
+    }
+
     public SparePart(String code, String description, double price) {
         this(code, description, price, 0, 0, 0);
     }

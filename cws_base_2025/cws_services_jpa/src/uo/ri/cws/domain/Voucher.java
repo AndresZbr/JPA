@@ -1,26 +1,56 @@
 package uo.ri.cws.domain;
 
+import uo.ri.util.assertion.ArgumentChecks;
+
 public class Voucher extends PaymentMean {
-	private String code;
-	private double available = 0.0;
-	private String description;
+    private String code;
+    private double available = 0.0;
+    private String description;
 
-	/**
-	 * Augments the accumulated (super.pay(amount) ) and decrements the available
-	 * @throws IllegalStateException if not enough available to pay
-	 */
-	@Override
-	public void pay(double amount) {
+    public Voucher(String code, String description, double available) {
+        ArgumentChecks.isNotBlank(code);
+        ArgumentChecks.isNotBlank(description);
+        ArgumentChecks.isNotNull(available);
 
-	}
+        this.code = code;
+        this.available = available;
+        this.description = description;
+    }
 
-	/**
-	 * A voucher can pay if it has enough available to pay the amount
-	 */
-	@Override
-	public boolean canPay(Double amount) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    /**
+     * Augments the accumulated (super.pay(amount) ) and decrements the
+     * available
+     * 
+     * @throws IllegalStateException if not enough available to pay
+     */
+    @Override
+    public void pay(double amount) {
+        if (!canPay(amount))
+            throw new IllegalStateException("Not enough balance in voucher");
+        addAccumulated(amount);
+        available -= amount;
+    }
+
+    /**
+     * A voucher can pay if it has enough available to pay the amount
+     */
+    @Override
+    public boolean canPay(double amount) {
+        if (amount <= available)
+            return true;
+        return false;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public double getAvailable() {
+        return available;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
 }

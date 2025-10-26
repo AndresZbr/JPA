@@ -35,9 +35,18 @@ public class CreditCard extends PaymentMean {
      * A credit card can pay if is not outdated
      */
     @Override
-    public boolean canPay(Double amount) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean canPay(double amount) {
+        if (LocalDate.now()
+                     .isAfter(validThru))
+            return false;
+        return true;
+    }
+
+    @Override
+    public void pay(double amount) {
+        if (!canPay(amount))
+            throw new IllegalStateException("Credit card expired");
+        addAccumulated(amount);
     }
 
 }

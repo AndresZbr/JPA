@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 public class Invoice {
     public enum InvoiceState {
@@ -23,10 +24,12 @@ public class Invoice {
 
     public Invoice(Long number) {
         // call full constructor with sensible defaults
+        this(number, LocalDate.now(), List.of());
     }
 
     public Invoice(Long number, LocalDate date) {
         // call full constructor with sensible defaults
+        this(number, date, List.of());
     }
 
     public Invoice(Long number, List<WorkOrder> workOrders) {
@@ -37,13 +40,38 @@ public class Invoice {
     public Invoice(Long number, LocalDate date, List<WorkOrder> workOrders) {
         // check arguments (always), through IllegalArgumentException store the
         // number add every work order calling addWorkOrder( w )
+        if (number == null) {
+            throw new IllegalArgumentException("Invoice number cannot be null");
+        }
+        if (date == null) {
+            throw new IllegalArgumentException("Invoice date cannot be null");
+        }
+        if (workOrders == null) {
+            throw new IllegalArgumentException(
+                    "WorkOrders list cannot be null");
+        }
+
+        this.number = number;
+        this.date = date;
+
+        for (WorkOrder wo : workOrders) {
+            addWorkOrder(wo);
+        }
+
+        computeAmount(); // calculamos amount y vat iniciales
     }
 
     /**
      * Computes amount and vat (vat depends on the date)
      */
     private void computeAmount() {
-
+        double sum = 0.0;
+        for (WorkOrder wo : workOrders) {
+            sum += wo.getAmount();
+        }
+        double rate = ( date.isBefore(LocalDate.of(2012, 7, 1)) ) ? 0.18 : 0.21;
+        this.vat = rate;
+        this.amount = sum * ( 1 + rate );
     }
 
     /**
@@ -56,7 +84,20 @@ public class Invoice {
      * @throws IllegalStateException if the workorder status is not FINISHED
      */
     public void addWorkOrder(WorkOrder workOrder) {
+        if (workOrder == null)
+            throw new IllegalArgumentException("workOrder cannot be null");
 
+        if (!state.equals(InvoiceState.NOT_YET_PAID))
+            throw new IllegalStateException("Invoice not NOT_YET_PAID");
+
+        if (!workOrder.isFinished())
+            throw new IllegalStateException("workorder not finished");
+
+        workOrders.add(workOrder);
+        workOrder._setInvoice(this);
+
+        workOrder.markAsInvoiced();
+        computeAmount();
     }
 
     /**
@@ -71,7 +112,23 @@ public class Invoice {
      *                                  workorder
      */
     public void removeWorkOrder(WorkOrder workOrder) {
+        if (workOrder == null) {
+            throw new IllegalArgumentException(
+                    "Cannot remove a null work order");
+        }
+        if (!state.equals(InvoiceState.NOT_YET_PAID)) {
+            throw new IllegalStateException(
+                    "Cannot remove work order from a settled invoice");
+        }
+        if (!workOrders.contains(workOrder)) {
+            throw new IllegalArgumentException(
+                    "Invoice does not contain the work order");
+        }
+        workOrders.remove(workOrder);
 
+        workOrder.markBackToFinished();
+
+        computeAmount();
     }
 
     /**
@@ -82,6 +139,21 @@ public class Invoice {
      *                               cover the total of the invoice
      */
     public void settle() {
+        if (state == InvoiceState.PAID) {
+            throw new IllegalStateException("Invoice already settled");
+        }
+
+        double totalPaid = 0.0;
+        for (Charge c : charges) {
+            totalPaid += c.getAmount();
+        }
+
+        if (totalPaid < amount) {
+            throw new IllegalStateException(
+                    "Charges do not cover invoice amount");
+        }
+
+        state = InvoiceState.PAID;
 
     }
 
@@ -99,6 +171,30 @@ public class Invoice {
 
     Set<Charge> _getCharges() {
         return charges;
+    }
+
+    public Long getNumber() {
+        return number;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public double getVat() {
+        return vat;
+    }
+
+    public InvoiceState getState() {
+        return state;
+    }
+
+    public BooleanSupplier isNotSettled() {
+        return () -> state == InvoiceState.NOT_YET_PAID;
     }
 
 }

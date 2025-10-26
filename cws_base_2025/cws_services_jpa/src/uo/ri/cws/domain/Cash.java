@@ -10,7 +10,12 @@ public class Cash extends PaymentMean {
      * A cash can always pay
      */
     @Override
-    public boolean canPay(Double amount) {
+    public boolean canPay(double amount) {
         return true;
+    }
+
+    @Override
+    public void pay(double amount) {
+        addAccumulated(amount);
     }
 }

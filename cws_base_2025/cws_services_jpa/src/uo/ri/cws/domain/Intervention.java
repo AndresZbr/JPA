@@ -1,6 +1,7 @@
 package uo.ri.cws.domain;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -80,6 +81,25 @@ public class Intervention {
 
     public WorkOrder getWorkOrder() {
         return workOrder;
+    }
+
+    public Double getAmount() {
+        double labor = workOrder.getVehicle()
+                                .getVehicleType()
+                                .getPricePerHour()
+                * minutes / 60.0;
+
+        double spares = substitutions.stream()
+                                     .mapToDouble(s -> s.getSparePart()
+                                                        .getPrice()
+                                             * s.getQuantity())
+                                     .sum();
+
+        return labor + spares;
+    }
+
+    public LocalDateTime getDate() {
+        return date.truncatedTo(ChronoUnit.MILLIS);
     }
 
 }

@@ -19,7 +19,7 @@ public class Substitution {
         // validar
         ArgumentChecks.isNotNull(sparePart);
         ArgumentChecks.isNotNull(intervention);
-        ArgumentChecks.isTrue(quantity >= 0);
+        ArgumentChecks.isTrue(quantity > 0);
 
         this.quantity = quantity;
         Associations.Substitutes.link(sparePart, this, intervention);
@@ -67,6 +67,10 @@ public class Substitution {
 
     void _setIntervention(Intervention intervention) {
         this.intervention = intervention;
+    }
+
+    public double getAmount() {
+        return sparePart.getPrice() * quantity;
     }
 
 }

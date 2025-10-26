@@ -24,17 +24,26 @@ public class WorkOrder {
     private Invoice invoice;
     private Set<Intervention> interventions = new HashSet<>();
 
-    public WorkOrder(Vehicle vehicle, String description) {
-        this(vehicle, description, LocalDateTime.now());
+    public WorkOrder(Vehicle vehicle) {
+        this(vehicle, LocalDateTime.now(), "Trabar en " + vehicle.getModel());
     }
 
-    public WorkOrder(Vehicle vehicle, String description, LocalDateTime date) {
+    public WorkOrder(Vehicle vehicle, String description) {
+        this(vehicle, LocalDateTime.now(), description);
+    }
+
+    public WorkOrder(Vehicle vehicle, LocalDateTime now) {
+        this(vehicle, now, "Trabar en " + vehicle.getModel());
+    }
+
+    public WorkOrder(Vehicle vehicle, LocalDateTime date, String description) {
         ArgumentChecks.isNotBlank(description);
         ArgumentChecks.isNotNull(date);
         ArgumentChecks.isNotNull(vehicle);
 
         this.date = date;
         this.description = description;
+        this.date = date.withNano(date.getNano() / 1_000_000 * 1_000_000);
         Associations.Fixes.link(vehicle, this);
     }
 
@@ -106,7 +115,15 @@ public class WorkOrder {
      *                               invoice
      */
     public void markAsInvoiced() {
-
+        if (state != WorkOrderState.FINISHED) {
+            throw new IllegalStateException(
+                    "WorkOrder must be FINISHED to be invoiced");
+        }
+        if (invoice == null) {
+            throw new IllegalStateException(
+                    "WorkOrder must be linked to an invoice");
+        }
+        state = WorkOrderState.INVOICED;
     }
 
     /**
@@ -118,7 +135,23 @@ public class WorkOrder {
      *                               state, or
      */
     public void markAsFinished() {
+        if (state != WorkOrderState.ASSIGNED) {
+            throw new IllegalStateException(
+                    "WorkOrder must be ASSIGNED to be finished");
+        }
+        state = WorkOrderState.FINISHED;
+        mechanic._getAssigned()
+                .remove(this);
+        mechanic = null;
+        computeAmount();
+    }
 
+    private void computeAmount() {
+        double total = 0.0;
+        for (Intervention i : interventions) {
+            total += i.getAmount();
+        }
+        this.amount = total;
     }
 
     /**
@@ -129,7 +162,12 @@ public class WorkOrder {
      * @throws IllegalStateException if - The work order is not INVOICED, or
      */
     public void markBackToFinished() {
-
+        if (state != WorkOrderState.INVOICED) {
+            throw new IllegalStateException(
+                    "WorkOrder must be INVOICED to revert back");
+        }
+        state = WorkOrderState.FINISHED;
+        invoice = null;
     }
 
     /**
@@ -141,6 +179,15 @@ public class WorkOrder {
      *                               or
      */
     public void assignTo(Mechanic mechanic) {
+        ArgumentChecks.isNotNull(mechanic);
+        if (state != WorkOrderState.OPEN) {
+            throw new IllegalStateException(
+                    "The work order is not in OPEN state");
+        }
+        this.mechanic = mechanic;
+        mechanic._getAssigned()
+                .add(this);
+        this.state = WorkOrderState.ASSIGNED;
 
     }
 
@@ -153,7 +200,14 @@ public class WorkOrder {
      *                               state
      */
     public void unassign() {
-
+        if (state != WorkOrderState.ASSIGNED) {
+            throw new IllegalStateException(
+                    "WorkOrder must be ASSIGNED to unassign");
+        }
+        mechanic._getAssigned()
+                .remove(this);
+        mechanic = null;
+        state = WorkOrderState.OPEN;
     }
 
     /**
@@ -165,7 +219,12 @@ public class WorkOrder {
      *                               state
      */
     public void reopen() {
-
+        if (state != WorkOrderState.FINISHED) {
+            throw new IllegalStateException(
+                    "WorkOrder must be FINISHED to reopen");
+        }
+        state = WorkOrderState.OPEN;
+        mechanic = null;
     }
 
     public Set<Intervention> getInterventions() {
@@ -190,6 +249,25 @@ public class WorkOrder {
 
     public Mechanic getMechanic() {
         return mechanic;
+    }
+
+    public boolean isFinished() {
+        if (state.equals(WorkOrderState.FINISHED)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isAssigned() {
+        return state == WorkOrderState.ASSIGNED && mechanic != null;
+    }
+
+    public boolean isOpen() {
+        return state == WorkOrderState.OPEN;
+    }
+
+    public boolean isInvoiced() {
+        return state == WorkOrderState.INVOICED;
     }
 
 }
