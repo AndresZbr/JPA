@@ -1,11 +1,21 @@
 package uo.ri.cws.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import uo.ri.util.assertion.ArgumentChecks;
 
+@Entity
+
+@Table(name = "TVOUCHERS")
 public class Voucher extends PaymentMean {
+    @Column(unique = true)
     private String code;
     private double available = 0.0;
     private String description;
+
+    Voucher() {
+    }
 
     public Voucher(String code, String description, double available) {
         ArgumentChecks.isNotBlank(code);
@@ -51,6 +61,12 @@ public class Voucher extends PaymentMean {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String toString() {
+        return "Voucher [code=" + code + ", available=" + available
+                + ", description=" + description + "] " + super.toString();
     }
 
 }

@@ -6,12 +6,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
-public class Invoice {
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import uo.ri.cws.domain.base.BaseEntity;
+
+@Entity
+@Table(name = "TINVOICES")
+public class Invoice extends BaseEntity {
     public enum InvoiceState {
         NOT_YET_PAID, PAID
     }
 
     // natural attributes
+    @Column(unique = true)
     private Long number;
     private LocalDate date;
     private double amount;
@@ -19,8 +28,13 @@ public class Invoice {
     private InvoiceState state = InvoiceState.NOT_YET_PAID;
 
     // accidental attributes
+    @OneToMany(mappedBy = "invoice")
     private Set<WorkOrder> workOrders = new HashSet<>();
+    @OneToMany(mappedBy = "invoice")
     private Set<Charge> charges = new HashSet<>();
+
+    Invoice() {
+    }
 
     public Invoice(Long number) {
         this(number, LocalDate.now(), List.of());

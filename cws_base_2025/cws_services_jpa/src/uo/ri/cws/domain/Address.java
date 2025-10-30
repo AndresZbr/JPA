@@ -2,17 +2,22 @@ package uo.ri.cws.domain;
 
 import java.util.Objects;
 
+import jakarta.persistence.Embeddable;
 import uo.ri.util.assertion.ArgumentChecks;
 
 /**
  * This class is a Value Type, thus - no setters - hashcode and equals over all
  * attributes
  */
+@Embeddable
 public class Address {
     private String street;
     private String city;
     private String zipCode;
-    //pepe
+    // pepe
+
+    public Address() {
+    }
 
     public Address(String street, String city, String zipCode) {
         ArgumentChecks.isNotBlank(street);

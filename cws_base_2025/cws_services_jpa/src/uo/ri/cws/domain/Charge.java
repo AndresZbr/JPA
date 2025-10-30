@@ -1,11 +1,22 @@
 package uo.ri.cws.domain;
 
-public class Charge {
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import uo.ri.cws.domain.base.BaseEntity;
+
+@Entity
+@Table(name = "TCHARGES", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "paymentmean_id", "invoice_id" }) })
+public class Charge extends BaseEntity {
     // natural attributes
     private double amount = 0.0;
 
     // accidental attributes
+    @ManyToOne
     private Invoice invoice;
+    @ManyToOne
     private PaymentMean paymentMean;
 
     public Invoice getInvoice() {
@@ -16,6 +27,10 @@ public class Charge {
         return paymentMean;
     }
 
+    Charge() {
+
+    }
+
     public Charge(Invoice invoice, PaymentMean pm, double amount) {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null");
@@ -23,8 +38,8 @@ public class Charge {
         if (pm == null) {
             throw new IllegalArgumentException("PaymentMean cannot be null");
         }
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Amount must be > 0");
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount must be >= 0");
         }
 
         // Validación de si el payment mean puede pagar

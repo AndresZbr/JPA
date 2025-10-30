@@ -2,12 +2,23 @@ package uo.ri.cws.domain;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import uo.ri.util.assertion.ArgumentChecks;
 
+@Entity
+
+@Table(name = "TCREDITCARDS")
 public class CreditCard extends PaymentMean {
+    @Column(unique = true)
     private String number;
     private String type;
     private LocalDate validThru;
+
+    CreditCard() {
+
+    }
 
     public CreditCard(String number, String type, LocalDate validThru) {
         ArgumentChecks.isNotBlank(number);
@@ -47,6 +58,12 @@ public class CreditCard extends PaymentMean {
         if (!canPay(amount))
             throw new IllegalStateException("Credit card expired");
         addAccumulated(amount);
+    }
+
+    @Override
+    public String toString() {
+        return "CreditCard [number=" + number + ", type=" + type
+                + ", validThru=" + validThru + "] " + super.toString();
     }
 
 }

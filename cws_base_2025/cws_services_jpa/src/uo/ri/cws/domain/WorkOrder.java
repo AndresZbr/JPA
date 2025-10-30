@@ -2,30 +2,47 @@ package uo.ri.cws.domain;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import uo.ri.cws.domain.base.BaseEntity;
 import uo.ri.util.assertion.ArgumentChecks;
 
-public class WorkOrder {
+@Entity
+@Table(name = "TWORKORDERS", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "date", "vehicle_id" }) })
+public class WorkOrder extends BaseEntity {
     public enum WorkOrderState {
         OPEN, ASSIGNED, FINISHED, INVOICED
     }
 
     // natural attributes
+
     private LocalDateTime date;
     private String description;
     private double amount = 0.0;
     private WorkOrderState state = WorkOrderState.OPEN;
 
     // accidental attributes
+    @ManyToOne
     private Vehicle vehicle;
+    @ManyToOne
     private Mechanic mechanic;
+    @ManyToOne
     private Invoice invoice;
+
+    @OneToMany(mappedBy = "workOrder")
     private Set<Intervention> interventions = new HashSet<>();
 
+    WorkOrder() {
+    }
+
     public WorkOrder(Vehicle vehicle) {
-        this(vehicle, LocalDateTime.now(), "Trabar en " + vehicle.getModel());
+        this(vehicle, LocalDateTime.now(), "Trabar en ");
     }
 
     public WorkOrder(Vehicle vehicle, String description) {
@@ -33,7 +50,7 @@ public class WorkOrder {
     }
 
     public WorkOrder(Vehicle vehicle, LocalDateTime now) {
-        this(vehicle, now, "Trabar en " + vehicle.getModel());
+        this(vehicle, now, "Trabar en ");
     }
 
     public WorkOrder(Vehicle vehicle, LocalDateTime date, String description) {
@@ -53,24 +70,6 @@ public class WorkOrder {
 
     public LocalDateTime getDate() {
         return date;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(date, vehicle);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        WorkOrder other = (WorkOrder) obj;
-        return Objects.equals(date, other.date)
-                && Objects.equals(vehicle, other.vehicle);
     }
 
     public void setDate(LocalDateTime date) {

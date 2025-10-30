@@ -1,22 +1,36 @@
 package uo.ri.cws.domain;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import uo.ri.cws.domain.base.BaseEntity;
 import uo.ri.util.assertion.ArgumentChecks;
 
-public class Client {
+@Entity
+@Table(name = "TCLIENTS")
+public class Client extends BaseEntity {
+    @Column(unique = true)
     private String nif;
     private String name;
     private String surname;
     private String email;
     private String phone;
+    @Embedded
     private Address address;
 
     // accidental attributes
+    @OneToMany(mappedBy = "Client")
     private Set<Vehicle> vehicles = new HashSet<>();
+    @OneToMany(mappedBy = "Client")
     private Set<PaymentMean> payments = new HashSet<>();
+
+    Client() {
+    }
 
     public Client(String nif, String name, String surname) {
         this(nif, name, surname, "no-email", "no-phone",
@@ -38,6 +52,11 @@ public class Client {
         this.email = email;
         this.phone = phone;
         this.address = address;
+    }
+
+    public Client(String nif) {
+        this(nif, "no-name", "no-surname", "no-email", "no-phone",
+                new Address("no-street", "no-city", "no-zipcode"));
     }
 
     public Set<Vehicle> getVehicles() {
@@ -81,26 +100,13 @@ public class Client {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(nif);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Client other = (Client) obj;
-        return Objects.equals(nif, other.nif);
-    }
-
-    @Override
     public String toString() {
         return "Client [nif=" + nif + ", name=" + name + ", surname=" + surname
                 + ", email=" + email + ", phone=" + phone + ", address="
                 + address + "]";
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
