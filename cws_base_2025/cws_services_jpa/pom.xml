@@ -39,5 +39,17 @@
 			<version>5.19.0</version>
 			<scope>test</scope>
 		</dependency>	
+		
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>4.0.7</version>
+		</dependency>
 	</dependencies>
 </project>
