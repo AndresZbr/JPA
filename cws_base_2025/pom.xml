@@ -19,6 +19,8 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
+		<outputDirectory>bin</outputDirectory>
 		
 		<resources>
 			<resource>
@@ -47,6 +49,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.5.0</version>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -67,14 +70,15 @@
 					</execution>
 				</executions>
 			</plugin>
+						
 		</plugins>
 		
- 		<pluginManagement>
+		<pluginManagement>
 			<plugins>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>1.6.0</version>
                 </plugin>
 			</plugins>
 		</pluginManagement>
