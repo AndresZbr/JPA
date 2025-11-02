@@ -25,7 +25,7 @@ public class WorkOrder {
     private Set<Intervention> interventions = new HashSet<>();
 
     public WorkOrder(Vehicle vehicle) {
-        this(vehicle, LocalDateTime.now(), "Trabar en " + vehicle.getModel());
+        this(vehicle, LocalDateTime.now(), "Trabar en ");
     }
 
     public WorkOrder(Vehicle vehicle, String description) {
@@ -33,13 +33,13 @@ public class WorkOrder {
     }
 
     public WorkOrder(Vehicle vehicle, LocalDateTime now) {
-        this(vehicle, now, "Trabar en " + vehicle.getModel());
+        this(vehicle, now, "Trabar en");
     }
 
     public WorkOrder(Vehicle vehicle, LocalDateTime date, String description) {
+        ArgumentChecks.isNotNull(vehicle);
         ArgumentChecks.isNotBlank(description);
         ArgumentChecks.isNotNull(date);
-        ArgumentChecks.isNotNull(vehicle);
 
         this.date = date;
         this.description = description;
