@@ -7,11 +7,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import uo.ri.cws.domain.base.BaseEntity;
 import uo.ri.util.assertion.ArgumentChecks;
 
 @Entity
 @Table(name = "TCONTRACTYPES")
-public class ContractType {
+public class ContractType extends BaseEntity {
 
     // natural attributes
     @Column(unique = true)

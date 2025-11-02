@@ -9,12 +9,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import uo.ri.cws.domain.base.BaseEntity;
 import uo.ri.util.assertion.ArgumentChecks;
 
 @Entity
 @Table(name = "TCONTRACTS", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "startDate", "mechanic_id" }) })
-public class Contract {
+public class Contract extends BaseEntity {
     public enum ContractState {
         IN_FORGE, TERMINATED
     }
@@ -31,10 +32,10 @@ public class Contract {
     @ManyToOne
     private Mechanic mechanic;
     @ManyToOne
-    private ContractType type;
+    private ContractType contractType;
     @ManyToOne
-    private ProfessionalGroup group;
-    @OneToMany(mappedBy = "payroll")
+    private ProfessionalGroup professionalGroup;
+    @OneToMany(mappedBy = "contract")
     private Set<Payroll> payrolls = new HashSet<>();
 
     public Contract() {
@@ -70,8 +71,8 @@ public class Contract {
 
         this.annualBaseSalary = annualSalary;
         this.mechanic = mechanic;
-        this.group = group;
-        this.type = type;
+        this.professionalGroup = group;
+        this.contractType = type;
         this.state = ContractState.IN_FORGE;
         this.settlement = 0.0;
 
@@ -101,14 +102,6 @@ public class Contract {
         return taxRate;
     }
 
-    public ContractType getType() {
-        return type;
-    }
-
-    public ProfessionalGroup getGroup() {
-        return group;
-    }
-
     public double getAnnualBaseSalary() {
         return annualBaseSalary;
     }
@@ -130,11 +123,11 @@ public class Contract {
     }
 
     public ContractType getContractType() {
-        return type;
+        return contractType;
     }
 
     public ProfessionalGroup getProfessionalGroup() {
-        return group;
+        return professionalGroup;
     }
 
     public Mechanic getMechanic() {
@@ -154,11 +147,11 @@ public class Contract {
     }
 
     public void _setGroup(ProfessionalGroup group) {
-        this.group = group;
+        this.professionalGroup = group;
     }
 
     public void _setType(ContractType type) {
-        this.type = type;
+        this.contractType = type;
     }
 
     public boolean isInForce() {
@@ -182,7 +175,7 @@ public class Contract {
         int yearsWorked = monthsWorked / 12;
 
         double dailyGrossSalary = this.annualBaseSalary / 365.0;
-        double compDays = this.type.getCompensationDaysPerYear();
+        double compDays = this.contractType.getCompensationDaysPerYear();
 
         this.settlement = yearsWorked * dailyGrossSalary * compDays;
     }

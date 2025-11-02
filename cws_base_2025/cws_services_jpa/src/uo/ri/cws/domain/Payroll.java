@@ -9,11 +9,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import uo.ri.cws.domain.base.BaseEntity;
 
 @Entity
 @Table(name = "TPAYROLLS", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "date", "contract_id" }) })
-public class Payroll {
+public class Payroll extends BaseEntity {
 
     private static final int PAYMENTS_IN_YEAR = 14;
     private static final int PAYROLLS_IN_YEAR = 12;
