@@ -179,4 +179,67 @@ public class Associations {
         }
     }
 
+    public static class Binds {
+
+        public static void link(Mechanic mechanic, Contract contract) {
+            contract._setMechanic(mechanic);
+            mechanic._getContracts()
+                    .add(contract);
+        }
+
+        public static void unlink(Mechanic mechanic, Contract contract) {
+            mechanic._getContracts()
+                    .remove(contract);
+            contract._setMechanic(null);
+        }
+
+    }
+
+    public static class Generates {
+
+        public static void link(Contract contract, Payroll payroll) {
+            payroll._setContract(contract);
+            contract._getPayrolls()
+                    .add(payroll);
+        }
+
+        public static void unlink(Contract contract, Payroll payroll) {
+            contract._getPayrolls()
+                    .remove(payroll);
+            payroll._setContract(null);
+        }
+
+    }
+
+    public static class Categorizes {
+
+        public static void link(ProfessionalGroup group, Contract contract) {
+            contract._setGroup(group);
+            group._getContracts()
+                 .add(contract);
+        }
+
+        public static void unlink(ProfessionalGroup group, Contract contract) {
+            group._getContracts()
+                 .remove(contract);
+            contract._setGroup(null);
+        }
+
+    }
+
+    public static class Defines {
+
+        public static void link(ContractType type, Contract contract) {
+            contract._setType(type);
+            type._getContracts()
+                .add(contract);
+        }
+
+        public static void unlink(ContractType type, Contract contract) {
+            type._getContracts()
+                .remove(contract);
+            contract._setType(null);
+        }
+
+    }
 }

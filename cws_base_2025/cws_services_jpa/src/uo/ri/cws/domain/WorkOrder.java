@@ -21,7 +21,6 @@ public class WorkOrder extends BaseEntity {
     }
 
     // natural attributes
-
     private LocalDateTime date;
     private String description;
     private double amount = 0.0;
